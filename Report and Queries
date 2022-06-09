@@ -1,0 +1,154 @@
+
+ Relational Database Model in 3NF and Physical Database Creation
+
+
+
+
+Contents:
+
+Relational Data Model	3
+Assumptions/Notes About Data Entities and Relationships	3
+Entity-Relationship Diagram	5
+Physical MySQL Database	7
+Assumptions/Notes About Data Set	7
+Screen shot of Physical Database objects	7
+Data in the Database	10
+
+ 
+Relational Data Model
+
+Assumptions/Notes About Data Entities and Relationships
+
+•	Assumptions/notes about Entities and data relationship:
+•	 List Registration Table has listing id, listing_url and name and each listing id represents a unique Airbnb room which is mentioned in listing_url
+•	 Each listing id has unique Description id associated with it. 
+•	So, one to one relationship exists between List Registration Table and Description Table (Cardinality)
+•	Every listing id should have a description id (Modality = 1)
+•	 All listing id has experience level as 1. So, many-to-one relationship exists Description table and     Experience table and every record has in description table has an experience Id i.e. (Modality= 1)
+•	  Each promotion id is linked to only one Promotion id. So, one-to-one Relationship is there  between the two tables. Modality of both tables is 1 and 
+•	Description id, neighborhood_overview, notes, transit, thumbnail_url, medium_url in Promotion table have null values
+•	 Each promotion id is linked to only one Host id. So, one-to-one Relationship is there between the two tables. Modality of both tables is 1 
+•	 In Host AIRBNB table and HOST Table, many to one relationship exists( because same host can post advertisements on different dates). And the Modality of host_id in Host table can be 1. 
+•	host_about, host_response_time, host_response_rate	host_acceptance_rate can have null values
+•	 Between Host AIRBNB table and Location verification table – one to one relationship exists. Modality of 1
+•	 Location verification table and Property and room type table have many-to-one relationships. Every Location id have Property and room type so MODALITY is 1. 
+
+•	 Location verification table and room_type table have many-to-one relationships. Each Location id have Property and room type so MODALITY is 1.
+
+•	 Accommodation availability table and Host AIRBNB table has one to one relationship. And every record of Accommodation availability table has one row connection, so Modality is 1. 
+
+•	 Accommodation availability table and Bed Type has many-to-one relationship. And modality is 1.
+
+•	 FEE AND SERVICE TABLE and Host AIRBNB table has one to one relationship with modality is 1.
+
+•	weekly_price, monthly_price, security_deposit, cleaning_fee has null values
+
+•	 DAY NIGHT CAPACITY TABLE and Host AIRBNB table has one-to-one relationship and modality is 1
+
+•	 TIME PERIOD AVAILABILITY TABLE and Host AIRBNB table has one-to-one relationship with Modality as 1.
+
+•	 Review Score Table and Host AIRBNB table has one-to-one relationship with Modality as 0 because all multiple records in Review Score Table are null which doesn’t provide any significance.
+
+•	review_scores_rating, review_scores_accuracy, review_scores_cleanliness, review_scores_checkin, review_scores_communication, review_scores_location, review_scores_value, reviews_per_month can have null values
+
+•	 Review frequency Table and Host AIRBNB table has one-to-one relationship with Modality as 1
+
+•	number_of_reviews, first_review, last_review have null values
+
+•	 Strictness Table and Host AIRBNB table has one-to-one relationship with Modality as 1.
+
+•	Review_table and Reviewer_table has one to one relationship
+
+•	Review_table and LR_table  has one to one relationship
+
+•	List Registration table and Listing_detail table has one-to-many relationship.
+
+
+
+
+Include reasons why the data model is in 3NF.
+
+This meets the 3NF requirement because the non-key attributes are not dependent on any other non-key attribute. Hence, overcoming transitive dependency.
+
+
+
+
+
+
+
+Entity-Relationship Diagram
+
+ 
+
+
+
+
+Assumptions/notes about data:
+Procedure Followed for normalization
+•	 The raw data provided in Kaggle has many redundant rows and noise. We first convert the raw data into normalized form
+•	After converting into 1NF, we make sure to decompose the 3 xlsx files into multiple tables to obey the condition for 2NF. Here, we make sure the non-key attributes solely depend on the primary key or composite primary key
+•	The last step to filtration is checking for 3NF. The non-key attributes must not be dependent on the other non-key attributes.
+
+
+
+
+
+
+Assumptions/notes about data
+•	Assuming that the attributes in the entities which are missing implies that user/host isn’t interested in knowing/providing that info. So, those values can be filled with null values in MySQL Workbench.
+•	 As web scrapping tool is used to get the dataset on Kaggle and it’s a SINGLE value so we can eliminate the column’s  scrape_id, last_scraped.
+•	 Pictures of Airbnb listing are in listing_url where images of facilities provided can be found so we can eliminate the Datathumbnail_url, medium_url, picture_url, xl_picture_url columns.
+•	 host_response_time can be removed as host_response_rate and host_acceptance_rate provides numerical values for the “Response time of host “ 
+•	 host_verifications and host_has_profile_pic are not useful to make decisions.
+•	 neighbourhood, neighbourhood_cleansed, neighbourhood_group_cleansed are not relevant to frame the relations between tables because they provide any useful infoormation
+•	 market, smart_location, country_code, country attributes are repeated attributes so using those to make a entity isn’t required. An individual would buy an item from its “City market” which is already in host_location.
+•	 square_feet attribute is NULL so didn’t considered it for ER Diagram and many more. 
+•	 price attribute doesn’t convey what AIRBNB is charging that amount for 
+•	 calendar_updated (NON- NUMERIC) which doesn’t imply numerical values for How many days before calendar was last updated 
+•	 calendar_last_scraped isn’t needed as it’s related to web scraping date 
+•	 requires_license, license, jurisdiction_names, instant_bookable attributes aren’t useful 
+
+
+
+
+
+
+
+Physical MySQL Database
+Assumptions/Notes About Data Set
+Include any assumptions made about data such as empty fields, sparse data, bad data, etc.
+Screen shot of Physical Database objects
+The Seattle database has the following Entities:
+
+ 
+
+
+Data inside the entities 
+
+
+ 
+ 
+
+Data in the Database
+Table Name	Primary Key	Foreign Key	# of Rows in Table
+Listing Table			listing id	host_id	1000
+Description Table				Description id	listing id	1000
+Promotion Table	Promotion id	Description id	1000
+Host AIRBNB Table	Host_ No	host_id	1000
+Host Table	host_id	N.A	769
+Location Verification Table	Location no.	Host_ No, P Id, R Id	1000
+Property and room type table	P. Id	N.A	12
+Room table	R. Id	N.A	3
+Time_Period_ availability table	A.Id	Host_ No, B. Id	1000
+Fee AND Service Table	FS.Id	Host_ No	1000
+Day Night Capacity Table	DN Id	Host_ No	1000
+Time Period Availability Table					TP Id	Host_ No	1000
+Review Score Table		Score Id	Host_No	1000
+Review frequency Table	RF id	Host_ No	1000
+Strictness Table	Strictness id	host no.	1000
+listing_Detail_table	Listing_No	Listing_id	1000
+Review_table	Review_No	Reviewer_id	1000
+Reviewer_table	Reviewer_id	Host_ No	1000
+LR Table	Id	Review_No	1000
+			
+
